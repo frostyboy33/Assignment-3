@@ -62,9 +62,6 @@ public class BookDAO implements IBookDAO {
                 books.add(book);
             }
         }
-        if(books.isEmpty()) {
-            books = null;
-        }
         return books;
     }
 
@@ -78,9 +75,6 @@ public class BookDAO implements IBookDAO {
                 books.add(book);
             }
         }
-        if(books.isEmpty()) {
-            books = null;
-        }
         return books;
     }
 
@@ -88,8 +82,14 @@ public class BookDAO implements IBookDAO {
 
     @Override
     public List<IBook> findBooksByAuthorTitle(String author, String title) {
-        // TODO Auto-generated method stub
-        return null;
+        List<IBook> books = new ArrayList<IBook>();
+        for (IBook book : this.bookMap.values()) {
+            if(book.getAuthor().equals(author) && 
+               book.getTitle().equals(title)) {
+                books.add(book);
+            }
+        }
+        return books;
     }
 
 }
