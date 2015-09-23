@@ -115,7 +115,7 @@ public class Book implements IBook {
 
 
     @Override
-    public void dispose() {
+    public void dispose() throws RuntimeException {
         if(this.state == EBookState.AVAILABLE ||
            this.state == EBookState.DAMAGED ||
            this.state == EBookState.LOST) {
@@ -129,39 +129,35 @@ public class Book implements IBook {
 
     @Override
     public EBookState getState() {
-        return null;
+        return this.state;
     }
 
 
 
     @Override
     public String getAuthor() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.author;
     }
 
 
 
     @Override
     public String getTitle() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.getTitle();
     }
 
 
 
     @Override
     public String getCallNumber() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.callNumber;
     }
 
 
 
     @Override
     public int getID() {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.iD;
     }
 
 }
