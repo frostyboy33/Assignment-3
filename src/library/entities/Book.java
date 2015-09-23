@@ -18,6 +18,9 @@ public class Book implements IBook {
     private ILoan loan;
     private EBookState state;
     
+    private final String NOT_AVALIABLE = "The book is not avaliable";
+    private final String NOT_ON_LOAN = "The book is not currently out on loan";
+    
     
     public Book(String author, String title, String callNumber, int bookID) 
            throws IllegalArgumentException {
@@ -54,7 +57,7 @@ public class Book implements IBook {
         if(this.state == EBookState.AVAILABLE) {
             this.loan = loan;
         } else {
-            throw new RuntimeException("Book is not avaliable");
+            throw new RuntimeException(this.NOT_AVALIABLE);
         }
     }
 
@@ -81,16 +84,19 @@ public class Book implements IBook {
                 this.state = EBookState.AVAILABLE;
             }
         } else {
-            throw new RuntimeException("Book is not currently on loan");
+            throw new RuntimeException(this.NOT_ON_LOAN);
         }
     }
 
 
 
     @Override
-    public void lose() {
-        // TODO Auto-generated method stub
-
+    public void lose() throws RuntimeException {
+        if(this.state == EBookState.ON_LOAN) {
+            this.state = EBookState.LOST;
+        } else {
+            throw new RuntimeException(this.NOT_ON_LOAN);
+        }
     }
 
 
