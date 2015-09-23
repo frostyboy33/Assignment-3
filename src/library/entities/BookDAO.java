@@ -18,6 +18,7 @@ public class BookDAO implements IBookDAO {
             throw new IllegalArgumentException("Helper cannot be null");
         } else {
             this.helper = helper;
+            this.nextID = 1;
         }
     }
     
@@ -25,8 +26,10 @@ public class BookDAO implements IBookDAO {
     
     @Override
     public IBook addBook(String author, String title, String callNo) {
-        // TODO Auto-generated method stub
-        return null;
+        IBook book = this.helper.makeBook(author, title, callNo, this.nextID);
+        this.bookMap.put(this.nextID, book);
+        this.nextID++;
+        return book;
     }
 
 
