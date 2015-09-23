@@ -1,5 +1,6 @@
 package library.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +56,16 @@ public class BookDAO implements IBookDAO {
 
     @Override
     public List<IBook> findBooksByAuthor(String author) {
-        // TODO Auto-generated method stub
-        return null;
+        List<IBook> books = new ArrayList<IBook>();
+        for (IBook book : this.bookMap.values()) {
+            if(book.getAuthor().equals(author)) {
+                books.add(book);
+            }
+        }
+        if(books.isEmpty()) {
+            books = null;
+        }
+        return books;
     }
 
 
