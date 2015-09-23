@@ -51,7 +51,7 @@ public class Book implements IBook {
     
     @Override
     public void borrow(ILoan loan) throws RuntimeException {
-        if(this.state == state.AVAILABLE) {
+        if(this.state == EBookState.AVAILABLE) {
             this.loan = loan;
         } else {
             throw new RuntimeException("Book is not avaliable");
@@ -62,8 +62,11 @@ public class Book implements IBook {
 
     @Override
     public ILoan getLoan() {
-        // TODO Auto-generated method stub
-        return null;
+        if(this.state == EBookState.ON_LOAN) {
+            return this.loan;
+        } else {
+            return null;
+        }
     }
 
 
