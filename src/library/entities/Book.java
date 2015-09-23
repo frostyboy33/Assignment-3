@@ -16,7 +16,8 @@ public class Book implements IBook {
     private int bookID;
     
     
-    public Book(String author, String title, String callNumber, int bookID) {
+    public Book(String author, String title, String callNumber, int bookID) 
+           throws IllegalArgumentException {
      
         this.validateConstructorObject(author);
         this.validateConstructorObject(title);
