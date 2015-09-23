@@ -20,7 +20,7 @@ public class Book implements IBook {
     
     private final String NOT_AVALIABLE = "The book is not avaliable";
     private final String NOT_ON_LOAN = "The book is not currently out on loan";
-    
+    private final String NOT_DAMAGED = "The book is not currently Damaged";
     
     public Book(String author, String title, String callNumber, int bookID) 
            throws IllegalArgumentException {
@@ -102,9 +102,12 @@ public class Book implements IBook {
 
 
     @Override
-    public void repair() {
-        // TODO Auto-generated method stub
-
+    public void repair() throws RuntimeException {
+        if(this.state == EBookState.DAMAGED) {
+            this.state = EBookState.AVAILABLE;
+        } else {
+            throw new RuntimeException(this.NOT_DAMAGED);
+        }
     }
 
 
