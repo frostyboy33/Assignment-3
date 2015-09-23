@@ -13,7 +13,10 @@ public class Book implements IBook {
     private String author;
     private String title;
     private String callNumber;
-    private int bookID;
+    private int iD;
+    
+    private ILoan loan;
+    private EBookState state;
     
     
     public Book(String author, String title, String callNumber, int bookID) 
@@ -27,7 +30,7 @@ public class Book implements IBook {
         this.author = author;
         this.title = title;
         this.callNumber = callNumber;
-        this.bookID = bookID;
+        this.iD = bookID;
         
     }
     
@@ -47,9 +50,12 @@ public class Book implements IBook {
     }
     
     @Override
-    public void borrow(ILoan loan) {
-        // TODO Auto-generated method stub
-
+    public void borrow(ILoan loan) throws RuntimeException {
+        if(this.state == state.AVAILABLE) {
+            this.loan = loan;
+        } else {
+            throw new RuntimeException("Book is not avaliable");
+        }
     }
 
 
