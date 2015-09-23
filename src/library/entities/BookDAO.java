@@ -47,8 +47,8 @@ public class BookDAO implements IBookDAO {
 
     @Override
     public List<IBook> listBooks() {
-        // TODO Auto-generated method stub
-        return null;
+        List<IBook> list = (List<IBook>) this.bookMap.values();
+        return list;
     }
 
 
