@@ -39,6 +39,8 @@ public class Book implements IBook {
         
     }
     
+    
+    
     private void validateConstructorObject(Object object) throws IllegalArgumentException {
         if(object instanceof String) {
             String object_string = (String)object;
@@ -53,6 +55,8 @@ public class Book implements IBook {
             }
         }
     }
+    
+    
     
     @Override
     public void borrow(ILoan loan) throws RuntimeException {
