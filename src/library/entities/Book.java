@@ -21,6 +21,7 @@ public class Book implements IBook {
     private final String NOT_AVALIABLE = "The book is not avaliable";
     private final String NOT_ON_LOAN = "The book is not currently out on loan";
     private final String NOT_DAMAGED = "The book is not currently Damaged";
+    private final String CANNOT_DISPOSE = "Cannot dispose book";
     
     public Book(String author, String title, String callNumber, int bookID) 
            throws IllegalArgumentException {
@@ -34,6 +35,7 @@ public class Book implements IBook {
         this.title = title;
         this.callNumber = callNumber;
         this.iD = bookID;
+        this.state = EBookState.AVAILABLE;
         
     }
     
@@ -114,8 +116,13 @@ public class Book implements IBook {
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        if(this.state == EBookState.AVAILABLE ||
+           this.state == EBookState.DAMAGED ||
+           this.state == EBookState.LOST) {
+            this.state = EBookState.DISPOSED;
+        } else {
+            throw new RuntimeException(this.CANNOT_DISPOSE);
+        }
     }
 
 
