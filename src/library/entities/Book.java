@@ -147,7 +147,7 @@ public class Book implements IBook {
 
     @Override
     public String getTitle() {
-        return this.getTitle();
+        return this.title;
     }
 
 
