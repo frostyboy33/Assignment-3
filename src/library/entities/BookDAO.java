@@ -1,12 +1,28 @@
 package library.entities;
 
 import java.util.List;
+import java.util.Map;
 
 import library.interfaces.daos.IBookDAO;
+import library.interfaces.daos.IBookHelper;
 import library.interfaces.entities.IBook;
 
 public class BookDAO implements IBookDAO {
 
+    private int nextID;
+    private Map<Integer, IBook> bookMap;
+    private IBookHelper helper;
+    
+    public BookDAO(IBookHelper helper) {
+        if(helper == null) {
+            throw new IllegalArgumentException("Helper cannot be null");
+        } else {
+            this.helper = helper;
+        }
+    }
+    
+    
+    
     @Override
     public IBook addBook(String author, String title, String callNo) {
         // TODO Auto-generated method stub
