@@ -1,11 +1,8 @@
 package library.entities;
 
-import java.util.Date;
-
 import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
-import library.interfaces.entities.IMember;
  
 
 public class Book implements IBook {
