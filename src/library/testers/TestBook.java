@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import library.entities.Book;
+import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 
@@ -122,8 +123,22 @@ public class TestBook {
 
 
     @Test
-    public void testReturnBook() {
-        fail("Not yet implemented");
+    public void testReturnBookDamaged() {
+        this.book.borrow(this.loan);
+        this.book.returnBook(true);
+        assertEquals(this.book.getState(), EBookState.DAMAGED);
+    }
+    
+    @Test
+    public void testReturnBookNotDamaged() {
+        this.book.borrow(this.loan);
+        this.book.returnBook(false);
+        assertEquals(this.book.getState(), EBookState.AVAILABLE);
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testReturnBookNotOnLoan() {
+        this.book.returnBook(true);
     }
 
 
