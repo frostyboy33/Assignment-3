@@ -145,14 +145,29 @@ public class TestBook {
 
     @Test
     public void testLose() {
-        fail("Not yet implemented");
+        this.book.borrow(this.loan);
+        this.book.lose();
+        assertEquals(this.book.getState(), EBookState.LOST);
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testLoseNotOnLoan() {
+        this.book.lose();
     }
 
 
 
     @Test
     public void testRepair() {
-        fail("Not yet implemented");
+        this.book.borrow(this.loan);
+        this.book.returnBook(true);
+        this.book.repair();
+        assertEquals(this.book.getState(), EBookState.AVAILABLE);
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testRepairNotDamaged() {
+        this.book.repair();
     }
 
 
