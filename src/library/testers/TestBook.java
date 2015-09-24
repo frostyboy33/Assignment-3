@@ -174,7 +174,14 @@ public class TestBook {
 
     @Test
     public void testDispose() {
-        fail("Not yet implemented");
+        this.book.dispose();
+        assertEquals(this.book.getState(), EBookState.DISPOSED);
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testDisposeOnLoan() {
+        this.book.borrow(loan);
+        this.book.dispose();
     }
 
 
