@@ -23,6 +23,8 @@ public class TestBook {
     private final String CALL_NUMBER = "11AC";
     private final Integer BOOK_ID = 1; 
     
+    
+    
     @Before
     public void setUp() throws Exception {
         this.book = new Book(this.AUTHOR, 
@@ -41,11 +43,14 @@ public class TestBook {
     }
 
 
+    
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionAuthorNull() {
         this.book = null;
         this.book = new Book(null, this.TITLE, this.CALL_NUMBER, this.BOOK_ID);
     }
+    
+    
     
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionTitleNull() {
@@ -53,11 +58,15 @@ public class TestBook {
         this.book = new Book(this.AUTHOR, null, this.CALL_NUMBER, this.BOOK_ID);
     }
     
+    
+    
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionCallNumberNull() {
         this.book = null;
         this.book = new Book(this.AUTHOR, this.TITLE, null, this.BOOK_ID);
     }
+    
+    
     
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionBookIDZero() {
@@ -65,11 +74,15 @@ public class TestBook {
         this.book = new Book(this.AUTHOR, this.TITLE, this.CALL_NUMBER, 0);
     }
     
+    
+    
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionAuthorEmpty() {
         this.book = null;
         this.book = new Book("", this.TITLE, this.CALL_NUMBER, this.BOOK_ID);
     }
+    
+    
     
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionTitleEmpty() {
@@ -77,11 +90,15 @@ public class TestBook {
         this.book = new Book(this.AUTHOR, "", this.CALL_NUMBER, this.BOOK_ID);
     }
     
+    
+    
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionCallNumberEmpty() {
         this.book = null;
         this.book = new Book(this.AUTHOR, this.TITLE, "", this.BOOK_ID);
     }
+    
+    
     
     @Test(expected = IllegalArgumentException.class)
     public void testBookIllegalArgumentExceptionBookIDNegative() {
@@ -89,17 +106,22 @@ public class TestBook {
         this.book = new Book(this.AUTHOR, this.TITLE, this.CALL_NUMBER, -1);
     }
     
+    
+    
     @Test
     public void testBook() {
         assertNotNull(this.book);
     }
 
+    
 
     @Test(expected = RuntimeException.class)
     public void testBorrowRuntimeException() {
         this.book.borrow(loan);
         this.book.borrow(loan);
     }
+    
+    
     
     @Test
     public void testBorrow() {
@@ -115,6 +137,8 @@ public class TestBook {
         assertEquals(this.book.getLoan(), this.loan);
     }
     
+    
+    
     @Test
     public void testGetLoanNull() {
         assertEquals(this.book.getLoan(), null);
@@ -129,12 +153,16 @@ public class TestBook {
         assertEquals(this.book.getState(), EBookState.DAMAGED);
     }
     
+    
+    
     @Test
     public void testReturnBookNotDamaged() {
         this.book.borrow(this.loan);
         this.book.returnBook(false);
         assertEquals(this.book.getState(), EBookState.AVAILABLE);
     }
+    
+    
     
     @Test(expected = RuntimeException.class)
     public void testReturnBookNotOnLoan() {
@@ -149,6 +177,8 @@ public class TestBook {
         this.book.lose();
         assertEquals(this.book.getState(), EBookState.LOST);
     }
+    
+    
     
     @Test(expected = RuntimeException.class)
     public void testLoseNotOnLoan() {
@@ -165,6 +195,8 @@ public class TestBook {
         assertEquals(this.book.getState(), EBookState.AVAILABLE);
     }
     
+    
+    
     @Test(expected = RuntimeException.class)
     public void testRepairNotDamaged() {
         this.book.repair();
@@ -178,6 +210,8 @@ public class TestBook {
         assertEquals(this.book.getState(), EBookState.DISPOSED);
     }
     
+    
+    
     @Test(expected = RuntimeException.class)
     public void testDisposeOnLoan() {
         this.book.borrow(loan);
@@ -188,35 +222,34 @@ public class TestBook {
 
     @Test
     public void testGetState() {
-        fail("Not yet implemented");
+        assertEquals(this.book.getState(), EBookState.AVAILABLE);
     }
 
 
 
     @Test
     public void testGetAuthor() {
-        fail("Not yet implemented");
+        assertEquals(this.book.getAuthor(), this.AUTHOR);
     }
 
 
 
     @Test
     public void testGetTitle() {
-        fail("Not yet implemented");
+        assertEquals(this.book.getTitle(), this.TITLE);
     }
 
 
 
     @Test
     public void testGetCallNumber() {
-        fail("Not yet implemented");
+        assertEquals(this.book.getCallNumber(), this.CALL_NUMBER);
     }
 
 
 
     @Test
     public void testGetID() {
-        fail("Not yet implemented");
+        assertEquals((Integer)this.book.getID(), (Integer)this.BOOK_ID);
     }
-
 }
