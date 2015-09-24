@@ -2,6 +2,8 @@ package library.testers;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +12,17 @@ import org.mockito.Mockito;
 import library.entities.BookDAO;
 import library.interfaces.daos.IBookDAO;
 import library.interfaces.daos.IBookHelper;
+import library.interfaces.entities.IBook;
 
 public class TestBookDAO {
 
     private IBookDAO bookDAO;
     private IBookHelper bookHelper;
+    
+
+    private final String AUTHOR = "author";
+    private final String TITLE = "title";
+    private final String CALL_NUMBER = "11AC";
     
     @Before
     public void setUp() throws Exception {
@@ -37,6 +45,8 @@ public class TestBookDAO {
         assertNotNull(this.bookDAO);
     }
     
+    
+    
     @Test(expected = IllegalArgumentException.class)
     public void testBookDAONull() {
         this.bookDAO = null;
@@ -47,42 +57,84 @@ public class TestBookDAO {
 
     @Test
     public void testAddBook() {
-        fail("Not yet implemented");
+        IBook book = this.bookDAO.addBook(this.AUTHOR, 
+                                          this.TITLE, 
+                                          this.CALL_NUMBER);
+        assertEquals(book, IBook.class);
     }
 
 
 
     @Test
     public void testGetBookByID() {
-        fail("Not yet implemented");
+        IBook book = this.bookDAO.addBook(this.AUTHOR, 
+                                          this.TITLE, 
+                                          this.CALL_NUMBER);
+        IBook book2 = this.bookDAO.getBookByID(book.getID());
+        assertEquals(book,book2);
+    }
+    
+    
+    
+    @Test
+    public void testGetBookByIDNull() {
+        IBook book = this.bookDAO.getBookByID(1);
+        assertEquals(book, null);
     }
 
 
 
     @Test
     public void testListBooks() {
-        fail("Not yet implemented");
+        List<IBook> list = this.bookDAO.listBooks();
+        assertNotNull(list);
     }
 
 
 
     @Test
     public void testFindBooksByAuthor() {
-        fail("Not yet implemented");
+        List<IBook> list = this.bookDAO.findBooksByAuthor(this.AUTHOR);
+        assertNotNull(list);
+    }
+    
+    
+    
+    @Test
+    public void testFindBooksByAuthorEmpty() {
+        List<IBook> list = this.bookDAO.findBooksByAuthor(null);
+        assertNotNull(list);
     }
 
 
 
     @Test
     public void testFindBooksByTitle() {
-        fail("Not yet implemented");
+        List<IBook> list = this.bookDAO.findBooksByTitle(this.TITLE);
+        assertNotNull(list);
+    }
+    
+    
+    
+    @Test
+    public void testFindBooksByTitleEmpty() {
+        List<IBook> list = this.bookDAO.findBooksByTitle(null);
+        assertNotNull(list);
     }
 
 
 
     @Test
     public void testFindBooksByAuthorTitle() {
-        fail("Not yet implemented");
+        List<IBook> list = this.bookDAO.findBooksByAuthorTitle(this.AUTHOR, this.TITLE);
+        assertNotNull(list);
     }
-
+    
+    
+    
+    @Test
+    public void testFindBooksByAuthorTitleEmpty() {
+        List<IBook> list = this.bookDAO.findBooksByAuthorTitle(null,null);
+        assertNotNull(list);
+    }
 }
