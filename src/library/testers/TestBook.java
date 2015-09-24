@@ -110,7 +110,13 @@ public class TestBook {
 
     @Test
     public void testGetLoan() {
-        fail("Not yet implemented");
+        this.book.borrow(this.loan);
+        assertEquals(this.book.getLoan(), this.loan);
+    }
+    
+    @Test
+    public void testGetLoanNull() {
+        assertEquals(this.book.getLoan(), null);
     }
 
 
