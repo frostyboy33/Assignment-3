@@ -15,6 +15,7 @@ import library.interfaces.entities.ILoan;
 public class TestBook {
 
     IBook book;
+    ILoan loan;
     
     private final String AUTHOR = "author";
     private final String TITLE = "title";
@@ -27,6 +28,7 @@ public class TestBook {
                              this.TITLE, 
                              this.CALL_NUMBER, 
                              this.BOOK_ID);
+        this.loan = Mockito.mock(ILoan.class);
     }
 
 
@@ -34,6 +36,7 @@ public class TestBook {
     @After
     public void tearDown() throws Exception {
         this.book = null;
+        this.loan = null;
     }
 
 
@@ -93,14 +96,14 @@ public class TestBook {
 
     @Test(expected = RuntimeException.class)
     public void testBorrowRuntimeException() {
-        fail("Not yet implemented");
+        this.book.borrow(loan);
+        this.book.borrow(loan);
     }
     
     @Test
     public void testBorrow() {
-        ILoan loan = Mockito.mock(ILoan.class);
-        this.book.borrow(loan);
-        assertEquals(this.book.getLoan(), loan);
+        this.book.borrow(this.loan);
+        assertEquals(this.book.getLoan(), this.loan);
     }
 
 
