@@ -22,16 +22,28 @@ public class TestBookDAO {
 
     private IBookDAO bookDAO;
     private IBookHelper bookHelper;
+    private IBook book;
     
 
     private final String AUTHOR = "author";
     private final String TITLE = "title";
     private final String CALL_NUMBER = "11AC";
+    private final Integer BOOK_ID = 1;
     
     @Before
     public void setUp() throws Exception {
+        this.book = Mockito.mock(IBook.class);
+        Mockito.when(this.book.getAuthor()).thenReturn(this.AUTHOR);
+        Mockito.when(this.book.getTitle()).thenReturn(this.TITLE);
+        Mockito.when(this.book.getID()).thenReturn(this.BOOK_ID);
+        
         this.bookHelper = Mockito.mock(IBookHelper.class);
+        Mockito.when(this.bookHelper.makeBook(this.AUTHOR, 
+                     this.TITLE,
+                     this.CALL_NUMBER,
+                     this.BOOK_ID)).thenReturn(this.book);
         this.bookDAO = new BookDAO(this.bookHelper);
+        
     }
 
 
