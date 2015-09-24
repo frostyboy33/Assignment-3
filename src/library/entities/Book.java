@@ -20,35 +20,45 @@ public class Book implements IBook {
     private final String NOT_DAMAGED = "The book is not currently Damaged";
     private final String CANNOT_DISPOSE = "Cannot dispose book";
     
+    private final String AUTHOR = "author";
+    private final String TITLE = "title";
+    private final String CALL_NUMBER = "call number";
+    private final String BOOK_ID = "book ID";
+    
     public Book(String author, String title, String callNumber, int bookID) 
            throws IllegalArgumentException {
      
-        this.validateConstructorObject(author);
-        this.validateConstructorObject(title);
-        this.validateConstructorObject(callNumber);
-        this.validateConstructorObject(bookID);
+        this.validateConstructorObject(author, this.AUTHOR);
+        this.validateConstructorObject(title, this.TITLE);
+        this.validateConstructorObject(callNumber, this.CALL_NUMBER);
+        this.validateConstructorObject(bookID, this.BOOK_ID);
         
         this.author = author;
         this.title = title;
         this.callNumber = callNumber;
         this.iD = bookID;
         this.state = EBookState.AVAILABLE;
-        
     }
     
     
     
-    private void validateConstructorObject(Object object) throws IllegalArgumentException {
-        if(object instanceof String) {
+    private void validateConstructorObject(Object object, String memberName) 
+            throws IllegalArgumentException {
+        if(object == null){
+            throw new IllegalArgumentException( memberName + " cannot be null");
+        }
+        else if(object instanceof String) {
             String object_string = (String)object;
-            if(object_string == null || object_string.isEmpty()) {
-                throw new IllegalArgumentException("String cannot be null or empty");
+            if(object_string.isEmpty()) {
+                throw new IllegalArgumentException(memberName + 
+                                                   " cannot be empty");
             }   
         }
         else if(object instanceof Integer) {
             Integer object_integer = (Integer)object;
             if(object_integer <= 0) {
-                throw new IllegalArgumentException("Integer cannot be less than or equal to 0");
+                throw new IllegalArgumentException(
+                          memberName + " cannot be less than or equal to 0");
             }
         }
     }
