@@ -69,6 +69,7 @@ public class Book implements IBook {
     public void borrow(ILoan loan) throws RuntimeException {
         if(this.state == EBookState.AVAILABLE) {
             this.loan = loan;
+            this.state = EBookState.ON_LOAN;
         } else {
             throw new RuntimeException(this.NOT_AVALIABLE);
         }

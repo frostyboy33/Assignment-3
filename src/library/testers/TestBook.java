@@ -5,9 +5,12 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import library.entities.Book;
 import library.interfaces.entities.IBook;
+import library.interfaces.entities.ILoan;
 
 public class TestBook {
 
@@ -35,27 +38,51 @@ public class TestBook {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void testBookIllegalArgumentExceptionAuthor() {
+    public void testBookIllegalArgumentExceptionAuthorNull() {
         this.book = null;
         this.book = new Book(null, this.TITLE, this.CALL_NUMBER, this.BOOK_ID);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testBookIllegalArgumentExceptionTitle() {
+    public void testBookIllegalArgumentExceptionTitleNull() {
         this.book = null;
         this.book = new Book(this.AUTHOR, null, this.CALL_NUMBER, this.BOOK_ID);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testBookIllegalArgumentExceptionCallNumber() {
+    public void testBookIllegalArgumentExceptionCallNumberNull() {
         this.book = null;
         this.book = new Book(this.AUTHOR, this.TITLE, null, this.BOOK_ID);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testBookIllegalArgumentExceptionBookID() {
+    public void testBookIllegalArgumentExceptionBookIDZero() {
         this.book = null;
         this.book = new Book(this.AUTHOR, this.TITLE, this.CALL_NUMBER, 0);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testBookIllegalArgumentExceptionAuthorEmpty() {
+        this.book = null;
+        this.book = new Book("", this.TITLE, this.CALL_NUMBER, this.BOOK_ID);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testBookIllegalArgumentExceptionTitleEmpty() {
+        this.book = null;
+        this.book = new Book(this.AUTHOR, "", this.CALL_NUMBER, this.BOOK_ID);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testBookIllegalArgumentExceptionCallNumberEmpty() {
+        this.book = null;
+        this.book = new Book(this.AUTHOR, this.TITLE, "", this.BOOK_ID);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testBookIllegalArgumentExceptionBookIDNegative() {
+        this.book = null;
+        this.book = new Book(this.AUTHOR, this.TITLE, this.CALL_NUMBER, -1);
     }
     
     @Test
@@ -64,10 +91,16 @@ public class TestBook {
     }
 
 
-
+    @Test(expected = RuntimeException.class)
+    public void testBorrowRuntimeException() {
+        fail("Not yet implemented");
+    }
+    
     @Test
     public void testBorrow() {
-        fail("Not yet implemented");
+        ILoan loan = Mockito.mock(ILoan.class);
+        this.book.borrow(loan);
+        assertEquals(this.book.getLoan(), loan);
     }
 
 
