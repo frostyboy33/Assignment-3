@@ -1,6 +1,7 @@
 package library.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class BookDAO implements IBookDAO {
         } else {
             this.helper = helper;
             this.nextID = 1;
+            this.bookMap = new HashMap<Integer, IBook>();
         }
     }
     
@@ -48,7 +50,7 @@ public class BookDAO implements IBookDAO {
 
     @Override
     public List<IBook> listBooks() {
-        List<IBook> list = (List<IBook>) this.bookMap.values();
+        List<IBook> list = new ArrayList<IBook>(this.bookMap.values());
         return list;
     }
 
