@@ -60,7 +60,7 @@ public class TestBookDAO {
         IBook book = this.bookDAO.addBook(this.AUTHOR, 
                                           this.TITLE, 
                                           this.CALL_NUMBER);
-        assertEquals(book, IBook.class);
+        assertNotNull(book);
     }
 
 
@@ -94,8 +94,15 @@ public class TestBookDAO {
 
     @Test
     public void testFindBooksByAuthor() {
+        this.bookDAO.addBook(this.AUTHOR, 
+                             this.TITLE, 
+                             this.CALL_NUMBER);
         List<IBook> list = this.bookDAO.findBooksByAuthor(this.AUTHOR);
-        assertNotNull(list);
+        if(list.get(0).getAuthor().equals(this.AUTHOR)) {
+            assertNotNull(list);
+        } else {
+            fail("List did not have correct author");
+        }     
     }
     
     
@@ -110,8 +117,15 @@ public class TestBookDAO {
 
     @Test
     public void testFindBooksByTitle() {
+        this.bookDAO.addBook(this.AUTHOR, 
+                             this.TITLE, 
+                             this.CALL_NUMBER);
         List<IBook> list = this.bookDAO.findBooksByTitle(this.TITLE);
-        assertNotNull(list);
+        if(list.get(0).getTitle().equals(this.TITLE)) {
+            assertNotNull(list);
+        } else {
+            fail("List did not have correct title");
+        } 
     }
     
     
@@ -126,8 +140,16 @@ public class TestBookDAO {
 
     @Test
     public void testFindBooksByAuthorTitle() {
+        this.bookDAO.addBook(this.AUTHOR, 
+                             this.TITLE, 
+                             this.CALL_NUMBER);
         List<IBook> list = this.bookDAO.findBooksByAuthorTitle(this.AUTHOR, this.TITLE);
-        assertNotNull(list);
+        if(list.get(0).getAuthor().equals(this.AUTHOR) && 
+           list.get(0).getTitle().equals(this.TITLE)) {
+            assertNotNull(list);
+        } else {
+            fail("List did not have correct title and author");
+        } 
     }
     
     
