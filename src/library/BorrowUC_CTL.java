@@ -49,6 +49,16 @@ public class BorrowUC_CTL implements ICardReaderListener,
 			IPrinter printer, IDisplay display,
 			IBookDAO bookDAO, ILoanDAO loanDAO, IMemberDAO memberDAO ) {
 
+	    this.reader = reader;
+	    this.scanner = scanner;
+	    this.printer = printer;
+	    this.bookDAO = bookDAO;
+	    this.loanDAO = loanDAO;
+	    this.memberDAO = memberDAO;
+	    
+	    this.reader.addListener(this);
+	    this.scanner.addListener(this);
+	    
 		this.display = display;
 		this.ui = new BorrowUC_UI(this);
 		state = EBorrowState.CREATED;
@@ -56,11 +66,16 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	
 	public void initialise() {
 		previous = display.getDisplay();
-		display.setDisplay((JPanel) ui, "Borrow UI");		
+		display.setDisplay((JPanel) ui, "Borrow UI");
+		this.reader.setEnabled(true);
+		this.scanner.setEnabled(false);
+		this.state = EBorrowState.INITIALIZED;
+		
 	}
 	
 	public void close() {
 		display.setDisplay(previous, "Main Menu");
+		this.reader.setEnabled(false);
 	}
 
 	@Override
