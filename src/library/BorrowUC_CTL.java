@@ -131,7 +131,12 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	@Override
 	public void cardSwiped(int memberID) {
-		throw new RuntimeException("Not implemented yet");
+	    if(this.state == EBorrowState.INITIALIZED) {
+	        
+	    }
+	    else {
+	        throw new RuntimeException("Not implemented yet");
+	    }
 	}
 	
 	
