@@ -92,6 +92,8 @@ public class BorrowUC_CTL implements ICardReaderListener,
 		state = EBorrowState.CREATED;
 	}
 	
+	
+	
 	private Object validateConstructorDAO(Object incomming, 
 	                                      Class<?> backup,
 	                                      Class<?> backupParameter,
@@ -110,12 +112,16 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	
 	
 	public void initialise() {
-		previous = display.getDisplay();
-		display.setDisplay((JPanel) ui, "Borrow UI");
-		this.reader.setEnabled(true);
-		this.scanner.setEnabled(false);
-		this.state = EBorrowState.INITIALIZED;
-		
+	    if(this.state == EBorrowState.CREATED) {
+    		previous = display.getDisplay();
+    		display.setDisplay((JPanel) ui, "Borrow UI");
+    		this.reader.setEnabled(true);
+    		this.scanner.setEnabled(false);
+    		this.state = EBorrowState.INITIALIZED;
+	    } 
+	    else {
+	        throw new RuntimeException();
+	    }
 	}
 	
 	public void close() {
