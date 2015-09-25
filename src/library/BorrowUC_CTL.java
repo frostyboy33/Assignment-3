@@ -1,16 +1,26 @@
 package library;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 
+import library.entities.BookDAO;
+import library.entities.BookHelper;
+import library.entities.LoanHelper;
+import library.entities.LoanMapDAO;
+import library.entities.MemberHelper;
+import library.entities.MemberMapDAO;
 import library.interfaces.EBorrowState;
 import library.interfaces.IBorrowUI;
 import library.interfaces.IBorrowUIListener;
 import library.interfaces.daos.IBookDAO;
+import library.interfaces.daos.IBookHelper;
 import library.interfaces.daos.ILoanDAO;
+import library.interfaces.daos.ILoanHelper;
 import library.interfaces.daos.IMemberDAO;
+import library.interfaces.daos.IMemberHelper;
 import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
@@ -52,9 +62,27 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	    this.reader = reader;
 	    this.scanner = scanner;
 	    this.printer = printer;
-	    this.bookDAO = bookDAO;
-	    this.loanDAO = loanDAO;
-	    this.memberDAO = memberDAO;
+	    
+	    try {
+            this.bookDAO = (IBookDAO) 
+                           this.validateConstructorDAO(bookDAO, 
+                                                       BookDAO.class,
+                                                       IBookHelper.class,
+                                                       BookHelper.class);
+            this.loanDAO = (ILoanDAO) 
+                           this.validateConstructorDAO(bookDAO, 
+                                                       LoanMapDAO.class,
+                                                       ILoanHelper.class,
+                                                       LoanHelper.class);
+            this.memberDAO = (IMemberDAO) 
+                              this.validateConstructorDAO(bookDAO, 
+                                                          MemberMapDAO.class,
+                                                          IMemberHelper.class,
+                                                          MemberHelper.class);
+        }
+	    catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	    
 	    this.reader.addListener(this);
 	    this.scanner.addListener(this);
@@ -63,6 +91,23 @@ public class BorrowUC_CTL implements ICardReaderListener,
 		this.ui = new BorrowUC_UI(this);
 		state = EBorrowState.CREATED;
 	}
+	
+	private Object validateConstructorDAO(Object incomming, 
+	                                      Class<?> backup,
+	                                      Class<?> backupParameter,
+	                                      Class<?> backupHelper) 
+	        throws Exception {
+	    Object returnObject = null;
+	    if(incomming == null) {
+	        returnObject = backup.getConstructor(backupParameter).newInstance(backupHelper.newInstance());
+	    } else {
+	        returnObject = incomming;
+	    }
+	    
+	    return returnObject;
+	}
+	
+	
 	
 	public void initialise() {
 		previous = display.getDisplay();
