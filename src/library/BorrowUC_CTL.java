@@ -294,7 +294,9 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	@Override
 	public void loansRejected() {
 	    if(this.state == EBorrowState.CONFIRMING_LOANS){
-	        
+	        this.close();
+	        this.initialise();
+	        this.cardSwiped(this.borrower.getID());
 	    }
 	    else {
 	        throw new RuntimeException("Not implemented yet");    
