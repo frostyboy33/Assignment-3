@@ -1,5 +1,7 @@
 package library.entities;
 
+import java.text.DateFormat;
+
 import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
@@ -170,6 +172,12 @@ public class Book implements IBook {
     @Override
     public int getID() {
         return this.iD;
+    }
+    
+    @Override
+    public String toString(){
+        return (String.format("Book ID:  %d\nAuthor:   %s\nTitle:   %s\n", 
+                this.getID(), this.getAuthor(), this.getTitle()));
     }
 
 }
