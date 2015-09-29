@@ -138,6 +138,9 @@ public class BorrowUC_CTL implements ICardReaderListener,
 		this.scanner.setEnabled(false);
 		this.setState(EBorrowState.CREATED);
 		this.ui.setState(EBorrowState.CANCELLED);
+		this.scanCount = 0;
+		this.pendingLoanList = null;
+		this.pendingLoanList = new ArrayList<ILoan>();
 	}
 
 	@Override
@@ -269,7 +272,24 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	@Override
 	public void loansConfirmed() {
-		throw new RuntimeException("Not implemented yet");
+	    if(this.state == EBorrowState.CONFIRMING_LOANS){
+	        for (ILoan loan : this.pendingLoanList) {
+                this.loanDAO.commitLoan(loan);
+            }
+	        List<ILoan> completeLoanList = new ArrayList<ILoan>();
+	        completeLoanList.addAll(this.loanList);
+	        // Note no need to add the pending loan list as the loanList is
+	        // a pointer to the loanDAO internal Map. So therefore when
+	        // commitLoan is called above it this.loanList has the compelte
+	        // list of all loans
+	        
+	        this.printer.print(this.buildLoanListDisplay(completeLoanList));
+	        
+	        this.close();
+	    }
+	    else {
+	        throw new RuntimeException("Not implemented yet");    
+	    }
 	}
 
 	@Override
