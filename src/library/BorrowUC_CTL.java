@@ -1,10 +1,12 @@
 package library;
 
+import java.io.Console;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
 import javax.swing.JPanel;
 
 import library.entities.BookDAO;
@@ -52,6 +54,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	
 	private List<IBook> bookList;
 	private List<ILoan> loanList;
+	private List<ILoan> pendingLoanList;
 	private IMember borrower;
 	
 	private JPanel previous;
@@ -91,7 +94,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	    
 	    this.reader.addListener(this);
 	    this.scanner.addListener(this);
-	    
+	    this.pendingLoanList = new ArrayList<ILoan>();
 		this.display = display;
 		this.ui = new BorrowUC_UI(this);
 		state = EBorrowState.CREATED;
@@ -153,8 +156,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.reader.setEnabled(false);
 	                this.scanner.setEnabled(false);
 	                this.ui.setState(EBorrowState.BORROWING_RESTRICTED);
-	                //this.ui.displayScannedBookDetails("");
-	                //this.ui.displayPendingLoan("");
 	                if(hasFines) {
 	                    this.ui.displayOutstandingFineMessage(this.borrower.
 	                                                          getFineAmount());
@@ -179,11 +180,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.ui.displayPendingLoan("");   
 	            }
 	            this.loanList = this.borrower.getLoans();  
-	            String loanDetails = "";
-                for (Iterator<ILoan> loan = this.loanList.iterator(); loan.hasNext();) {
-                    loanDetails += loan.next().toString();
-                }
-                this.ui.displayExistingLoan(loanDetails);
+                this.ui.displayExistingLoan(this.buildLoanListDisplay(this.loanList));
                 this.ui.displayMemberDetails(this.borrower.getID(),
                                              this.borrower.getFirstName() + " "
                                              + this.borrower.getLastName(),
@@ -199,7 +196,53 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	
 	@Override
 	public void bookScanned(int barcode) {
-		throw new RuntimeException("Not implemented yet");
+	    if(this.state == EBorrowState.SCANNING_BOOKS){
+	        this.ui.displayErrorMessage("");
+	        IBook book = this.bookDAO.getBookByID(barcode);
+	        if(book != null){
+	            EBookState bookState = book.getState();
+	            if(bookState == EBookState.AVAILABLE) {
+	                boolean isNotPending = true;
+	                for (Iterator<ILoan> iterator = this.pendingLoanList.iterator(); iterator.hasNext();) {
+                        ILoan loan_item = iterator.next();
+                        if(loan_item.getBook().getID() == barcode){
+                            isNotPending = false;
+                        }
+                    }
+	                if(isNotPending){
+	                    int allLoans = scanCount + this.loanList.size();
+	                    if(allLoans < IMember.LOAN_LIMIT){
+	                        this.scanCount++;
+	                        allLoans++;
+        	                ILoan loan = this.loanDAO.createLoan(this.borrower, book);
+        	                this.pendingLoanList.add(loan);
+        	                this.ui.displayScannedBookDetails(book.toString());	                
+        	                this.ui.displayPendingLoan(this.buildLoanListDisplay(this.pendingLoanList));
+	                    }
+	                    if(allLoans == IMember.LOAN_LIMIT) {
+	                        this.ui.setState(EBorrowState.CONFIRMING_LOANS);
+	                        this.reader.setEnabled(false);
+	                        this.scanner.setEnabled(false);
+	                        this.setState(EBorrowState.CONFIRMING_LOANS);
+	                    }
+	                }
+	                else {
+	                    this.ui.displayErrorMessage("Book already scanned");
+	                }
+	            }
+	            else {
+	                this.ui.displayErrorMessage("Book not avaliable");
+	            }
+	        }
+	        else {
+	            this.ui.displayErrorMessage("Book not found");
+	        }
+	        
+	    }
+	    else {
+	        throw new RuntimeException();
+	    }
+		
 	}
 
 	
