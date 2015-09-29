@@ -220,10 +220,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
         	                this.ui.displayPendingLoan(this.buildLoanListDisplay(this.pendingLoanList));
 	                    }
 	                    if(allLoans == IMember.LOAN_LIMIT) {
-	                        this.ui.setState(EBorrowState.CONFIRMING_LOANS);
-	                        this.reader.setEnabled(false);
-	                        this.scanner.setEnabled(false);
-	                        this.setState(EBorrowState.CONFIRMING_LOANS);
+	                        this.scansCompleted();
 	                    }
 	                }
 	                else {
@@ -257,7 +254,17 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	
 	@Override
 	public void scansCompleted() {
-		throw new RuntimeException("Not implemented yet");
+	    if(this.state == EBorrowState.SCANNING_BOOKS){
+	        this.setState(EBorrowState.CONFIRMING_LOANS);
+	        this.ui.setState(EBorrowState.CONFIRMING_LOANS);
+	        this.reader.setEnabled(false);
+	        this.scanner.setEnabled(false);
+	        this.ui.displayConfirmingLoan(this.buildLoanListDisplay(this.pendingLoanList));
+	    }
+	    else {
+	        throw new RuntimeException();
+	    }
+		
 	}
 
 	@Override
