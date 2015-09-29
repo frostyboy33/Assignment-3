@@ -1,31 +1,18 @@
 package library;
 
-import java.io.Console;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
 import javax.swing.JPanel;
 
-import library.entities.BookDAO;
-import library.entities.BookHelper;
-import library.entities.LoanHelper;
-import library.entities.LoanMapDAO;
-import library.entities.MemberHelper;
-import library.entities.MemberMapDAO;
 import library.interfaces.EBorrowState;
 import library.interfaces.IBorrowUI;
 import library.interfaces.IBorrowUIListener;
 import library.interfaces.daos.IBookDAO;
-import library.interfaces.daos.IBookHelper;
 import library.interfaces.daos.ILoanDAO;
-import library.interfaces.daos.ILoanHelper;
 import library.interfaces.daos.IMemberDAO;
-import library.interfaces.daos.IMemberHelper;
 import library.interfaces.entities.EBookState;
-import library.interfaces.entities.EMemberState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 import library.interfaces.entities.IMember;
@@ -69,29 +56,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	    this.printer = printer;
 	    this.bookDAO = bookDAO;
 	    this.loanDAO = loanDAO;
-	    this.memberDAO = memberDAO;
-	    
-//	    try {
-//            this.bookDAO = (IBookDAO) 
-//                           this.validateConstructorDAO(bookDAO, 
-//                                                       BookDAO.class,
-//                                                       IBookHelper.class,
-//                                                       BookHelper.class);
-//            this.loanDAO = (ILoanDAO) 
-//                           this.validateConstructorDAO(bookDAO, 
-//                                                       LoanMapDAO.class,
-//                                                       ILoanHelper.class,
-//                                                       LoanHelper.class);
-//            this.memberDAO = (IMemberDAO) 
-//                              this.validateConstructorDAO(bookDAO, 
-//                                                          MemberMapDAO.class,
-//                                                          IMemberHelper.class,
-//                                                          MemberHelper.class);
-//        }
-//	    catch (Exception e) {
-//	        e.printStackTrace();
-//	    }
-	    
+	    this.memberDAO = memberDAO;	    
 	    this.reader.addListener(this);
 	    this.scanner.addListener(this);
 	    this.pendingLoanList = new ArrayList<ILoan>();
@@ -100,24 +65,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 		state = EBorrowState.CREATED;
 	}
 	
-	
-	
-	private Object validateConstructorDAO(Object incomming, 
-	                                      Class<?> backup,
-	                                      Class<?> backupParameter,
-	                                      Class<?> backupHelper) 
-	        throws Exception {
-	    Object returnObject = null;
-	    if(incomming == null) {
-	        returnObject = backup.getConstructor(backupParameter).newInstance(backupHelper.newInstance());
-	    } else {
-	        returnObject = incomming;
-	    }
-	    
-	    return returnObject;
-	}
-	
-	
+
 	
 	public void initialise() {
 	    if(this.state == EBorrowState.CREATED) {
@@ -207,7 +155,8 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	            EBookState bookState = book.getState();
 	            if(bookState == EBookState.AVAILABLE) {
 	                boolean isNotPending = true;
-	                for (Iterator<ILoan> iterator = this.pendingLoanList.iterator(); iterator.hasNext();) {
+	                for (Iterator<ILoan> iterator = 
+	                     this.pendingLoanList.iterator(); iterator.hasNext();) {
                         ILoan loan_item = iterator.next();
                         if(loan_item.getBook().getID() == barcode){
                             isNotPending = false;
@@ -216,10 +165,12 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                if(isNotPending){
 	                    if(this.scanCount < IMember.LOAN_LIMIT){
 	                        this.scanCount++;
-        	                ILoan loan = this.loanDAO.createLoan(this.borrower, book);
+        	                ILoan loan = this.loanDAO.createLoan(this.borrower,
+        	                                                     book);
         	                this.pendingLoanList.add(loan);
         	                this.ui.displayScannedBookDetails(book.toString());	                
-        	                this.ui.displayPendingLoan(this.buildLoanListDisplay(this.pendingLoanList));
+        	                this.ui.displayPendingLoan(this.
+        	                        buildLoanListDisplay(this.pendingLoanList));
 	                    }
 	                    if(this.scanCount == IMember.LOAN_LIMIT) {
 	                        this.scansCompleted();
@@ -261,7 +212,8 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	        this.ui.setState(EBorrowState.CONFIRMING_LOANS);
 	        this.reader.setEnabled(false);
 	        this.scanner.setEnabled(false);
-	        this.ui.displayConfirmingLoan(this.buildLoanListDisplay(this.pendingLoanList));
+	        this.ui.displayConfirmingLoan(this.
+	                                buildLoanListDisplay(this.pendingLoanList));
 	    }
 	    else {
 	        throw new RuntimeException();
