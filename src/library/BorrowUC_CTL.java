@@ -143,6 +143,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	        this.borrower = this.memberDAO.getMemberByID(memberID);
 	        if(this.borrower != null){
 	            // member exists
+	            
 	            boolean overdue = this.borrower.hasOverDueLoans();
 	            boolean atLoanLimit = this.borrower.hasReachedLoanLimit();
 	            boolean hasFines = this.borrower.hasFinesPayable();
@@ -152,8 +153,8 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.reader.setEnabled(false);
 	                this.scanner.setEnabled(false);
 	                this.ui.setState(EBorrowState.BORROWING_RESTRICTED);
-	                this.ui.displayScannedBookDetails("");
-	                this.ui.displayPendingLoan("");
+	                //this.ui.displayScannedBookDetails("");
+	                //this.ui.displayPendingLoan("");
 	                if(hasFines) {
 	                    this.ui.displayOutstandingFineMessage(this.borrower.
 	                                                          getFineAmount());
@@ -175,15 +176,18 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.scanner.setEnabled(true);
 	                this.ui.setState(EBorrowState.SCANNING_BOOKS);
 	                this.ui.displayScannedBookDetails("");
-	                this.ui.displayPendingLoan("");
-	                this.ui.displayOutstandingFineMessage(0);
-	                this.loanList = this.borrower.getLoans();     
+	                this.ui.displayPendingLoan("");   
 	            }
+	            this.loanList = this.borrower.getLoans();  
 	            String loanDetails = "";
                 for (Iterator<ILoan> loan = this.loanList.iterator(); loan.hasNext();) {
                     loanDetails += loan.next().toString();
                 }
-                this.ui.displayExistingLoan(loanDetails);    
+                this.ui.displayExistingLoan(loanDetails);
+                this.ui.displayMemberDetails(this.borrower.getID(),
+                                             this.borrower.getFirstName() + " "
+                                             + this.borrower.getLastName(),
+                                             this.borrower.getContactPhone());
 	        }
 	    }
 	    else {
