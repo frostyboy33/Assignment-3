@@ -102,7 +102,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	            boolean atLoanLimit = this.borrower.hasReachedLoanLimit();
 	            boolean hasFines = this.borrower.hasFinesPayable();
 	            boolean overFineLimit = this.borrower.hasReachedFineLimit();
-	            if(overdue || atLoanLimit || hasFines || overFineLimit){
+	            if(overdue || atLoanLimit || overFineLimit){
 	                this.setState(EBorrowState.BORROWING_RESTRICTED);
 	                this.reader.setEnabled(false);
 	                this.scanner.setEnabled(false);
@@ -128,7 +128,10 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.scanner.setEnabled(true);
 	                this.ui.setState(EBorrowState.SCANNING_BOOKS);
 	                this.ui.displayScannedBookDetails("");
-	                this.ui.displayPendingLoan("");   
+	                this.ui.displayPendingLoan("");
+	                if(hasFines){
+	                    this.ui.displayOutstandingFineMessage(this.borrower.getFineAmount());
+	                }
 	            }
 	            this.loanList = this.borrower.getLoans();
 	            this.scanCount = this.loanList.size();
