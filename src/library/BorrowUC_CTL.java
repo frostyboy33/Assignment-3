@@ -182,7 +182,8 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	                this.ui.displayScannedBookDetails("");
 	                this.ui.displayPendingLoan("");   
 	            }
-	            this.loanList = this.borrower.getLoans();  
+	            this.loanList = this.borrower.getLoans();
+	            this.scanCount = this.loanList.size();
                 this.ui.displayExistingLoan(this.buildLoanListDisplay(this.loanList));
                 this.ui.displayMemberDetails(this.borrower.getID(),
                                              this.borrower.getFirstName() + " "
@@ -213,16 +214,14 @@ public class BorrowUC_CTL implements ICardReaderListener,
                         }
                     }
 	                if(isNotPending){
-	                    int allLoans = scanCount + this.loanList.size();
-	                    if(allLoans < IMember.LOAN_LIMIT){
+	                    if(this.scanCount < IMember.LOAN_LIMIT){
 	                        this.scanCount++;
-	                        allLoans++;
         	                ILoan loan = this.loanDAO.createLoan(this.borrower, book);
         	                this.pendingLoanList.add(loan);
         	                this.ui.displayScannedBookDetails(book.toString());	                
         	                this.ui.displayPendingLoan(this.buildLoanListDisplay(this.pendingLoanList));
 	                    }
-	                    if(allLoans == IMember.LOAN_LIMIT) {
+	                    if(this.scanCount == IMember.LOAN_LIMIT) {
 	                        this.scansCompleted();
 	                    }
 	                }
@@ -294,7 +293,13 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	@Override
 	public void loansRejected() {
-		throw new RuntimeException("Not implemented yet");
+	    if(this.state == EBorrowState.CONFIRMING_LOANS){
+	        
+	    }
+	    else {
+	        throw new RuntimeException("Not implemented yet");    
+	    }
+		
 	}
 
 	private String buildLoanListDisplay(List<ILoan> loans) {
