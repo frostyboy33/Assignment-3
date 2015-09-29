@@ -109,5 +109,11 @@ public class Loan implements ILoan {
 				DateFormat.getDateInstance().format(dueDate)));
 	}
 
+    @Override
+    public boolean isCurrent() {
+        
+        return false;
+    }
+
 
 }

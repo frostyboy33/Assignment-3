@@ -15,6 +15,8 @@ public interface ILoan {
 	
 	public boolean checkOverDue(Date currentDate);
 	
+	public boolean isCurrent();
+	
 	public IMember getBorrower();
 	
 	public IBook getBook();
