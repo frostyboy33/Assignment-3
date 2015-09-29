@@ -1,5 +1,11 @@
 package library;
 
+import library.entities.BookDAO;
+import library.entities.BookHelper;
+import library.entities.LoanHelper;
+import library.entities.LoanMapDAO;
+import library.entities.MemberHelper;
+import library.entities.MemberMapDAO;
 import library.hardware.CardReader;
 import library.hardware.Display;
 import library.hardware.Printer;
@@ -32,6 +38,10 @@ public class Main implements IMainListener {
 		scanner = new Scanner();
 		printer = new Printer();
 		display = new Display();
+		
+		this.bookDAO = new BookDAO(new BookHelper());
+		this.loanDAO = new LoanMapDAO(new LoanHelper());
+		this.memberDAO = new MemberMapDAO(new MemberHelper());
 		
 		//setupTestData();
 	}
