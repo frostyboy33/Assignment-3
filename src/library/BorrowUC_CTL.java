@@ -2,6 +2,7 @@ package library;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -22,6 +23,7 @@ import library.interfaces.daos.ILoanHelper;
 import library.interfaces.daos.IMemberDAO;
 import library.interfaces.daos.IMemberHelper;
 import library.interfaces.entities.EBookState;
+import library.interfaces.entities.EMemberState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 import library.interfaces.entities.IMember;
@@ -62,27 +64,30 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	    this.reader = reader;
 	    this.scanner = scanner;
 	    this.printer = printer;
+	    this.bookDAO = bookDAO;
+	    this.loanDAO = loanDAO;
+	    this.memberDAO = memberDAO;
 	    
-	    try {
-            this.bookDAO = (IBookDAO) 
-                           this.validateConstructorDAO(bookDAO, 
-                                                       BookDAO.class,
-                                                       IBookHelper.class,
-                                                       BookHelper.class);
-            this.loanDAO = (ILoanDAO) 
-                           this.validateConstructorDAO(bookDAO, 
-                                                       LoanMapDAO.class,
-                                                       ILoanHelper.class,
-                                                       LoanHelper.class);
-            this.memberDAO = (IMemberDAO) 
-                              this.validateConstructorDAO(bookDAO, 
-                                                          MemberMapDAO.class,
-                                                          IMemberHelper.class,
-                                                          MemberHelper.class);
-        }
-	    catch (Exception e) {
-	        e.printStackTrace();
-	    }
+//	    try {
+//            this.bookDAO = (IBookDAO) 
+//                           this.validateConstructorDAO(bookDAO, 
+//                                                       BookDAO.class,
+//                                                       IBookHelper.class,
+//                                                       BookHelper.class);
+//            this.loanDAO = (ILoanDAO) 
+//                           this.validateConstructorDAO(bookDAO, 
+//                                                       LoanMapDAO.class,
+//                                                       ILoanHelper.class,
+//                                                       LoanHelper.class);
+//            this.memberDAO = (IMemberDAO) 
+//                              this.validateConstructorDAO(bookDAO, 
+//                                                          MemberMapDAO.class,
+//                                                          IMemberHelper.class,
+//                                                          MemberHelper.class);
+//        }
+//	    catch (Exception e) {
+//	        e.printStackTrace();
+//	    }
 	    
 	    this.reader.addListener(this);
 	    this.scanner.addListener(this);
@@ -127,15 +132,62 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	public void close() {
 		display.setDisplay(previous, "Main Menu");
 		this.reader.setEnabled(false);
+		this.scanner.setEnabled(false);
+		this.setState(EBorrowState.CREATED);
+		this.ui.setState(EBorrowState.CANCELLED);
 	}
 
 	@Override
 	public void cardSwiped(int memberID) {
 	    if(this.state == EBorrowState.INITIALIZED) {
-	        
+	        this.borrower = this.memberDAO.getMemberByID(memberID);
+	        if(this.borrower != null){
+	            // member exists
+	            boolean overdue = this.borrower.hasOverDueLoans();
+	            boolean atLoanLimit = this.borrower.hasReachedLoanLimit();
+	            boolean hasFines = this.borrower.hasFinesPayable();
+	            boolean overFineLimit = this.borrower.hasReachedFineLimit();
+	            if(overdue || atLoanLimit || hasFines || overFineLimit){
+	                this.setState(EBorrowState.BORROWING_RESTRICTED);
+	                this.reader.setEnabled(false);
+	                this.scanner.setEnabled(false);
+	                this.ui.setState(EBorrowState.BORROWING_RESTRICTED);
+	                this.ui.displayScannedBookDetails("");
+	                this.ui.displayPendingLoan("");
+	                if(hasFines) {
+	                    this.ui.displayOutstandingFineMessage(this.borrower.
+	                                                          getFineAmount());
+	                }
+	                if(overdue){
+	                    this.ui.displayOverDueMessage();
+	                }
+	                if(atLoanLimit){
+	                    this.ui.displayAtLoanLimitMessage();
+	                }
+	                if(overFineLimit){
+	                    this.ui.displayOverFineLimitMessage(this.borrower.
+	                                                        getFineAmount());
+	                }
+	            }
+	            else {
+	                this.setState(EBorrowState.SCANNING_BOOKS);
+	                this.reader.setEnabled(false);
+	                this.scanner.setEnabled(true);
+	                this.ui.setState(EBorrowState.SCANNING_BOOKS);
+	                this.ui.displayScannedBookDetails("");
+	                this.ui.displayPendingLoan("");
+	                this.ui.displayOutstandingFineMessage(0);
+	                this.loanList = this.borrower.getLoans();     
+	            }
+	            String loanDetails = "";
+                for (Iterator<ILoan> loan = this.loanList.iterator(); loan.hasNext();) {
+                    loanDetails += loan.next().toString();
+                }
+                this.ui.displayExistingLoan(loanDetails);    
+	        }
 	    }
 	    else {
-	        throw new RuntimeException("Not implemented yet");
+	        throw new RuntimeException();
 	    }
 	}
 	
@@ -148,7 +200,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	
 	private void setState(EBorrowState state) {
-		throw new RuntimeException("Not implemented yet");
+		this.state = state;
 	}
 
 	@Override
