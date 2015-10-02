@@ -212,5 +212,14 @@ public class IntegrationTestBorrowUC_CTL {
         this.borrowControl.cardSwiped(this.MEMBER_OVERDUE);
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
     }
+    
+    
+    
+    @Test
+    public void testCardSwipedMaxedFines() {
+        this.borrowControl.initialise();
+        this.borrowControl.cardSwiped(this.MEMBER_MAXED_FINES);
+        assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
+    }
 
 }
