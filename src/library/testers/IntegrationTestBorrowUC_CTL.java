@@ -46,6 +46,8 @@ public class IntegrationTestBorrowUC_CTL {
     
     BorrowUC_CTL borrowControl;
     
+    private final Integer MEMBER_ID = 1;
+    
 
     @Before
     public void setUp() throws Exception {
@@ -114,7 +116,10 @@ public class IntegrationTestBorrowUC_CTL {
         this.borrowControl.initialise();
     }
 
-
+    @Test(expected = RuntimeException.class)
+    public void testCardSwipedRuntimeException() {
+        this.borrowControl.cardSwiped(this.MEMBER_ID);
+    }
 
     @Test
     public void testCardSwiped() {
