@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JPanel;
 
 import org.junit.After;
 import org.junit.Before;
@@ -174,6 +175,11 @@ public class IntegrationTestBorrowUC_CTL {
     @Test
     public void testInitialise() {
         this.borrowControl.initialise();
+        
+        Mockito.verify(this.cardReader).setEnabled(true);
+        Mockito.verify(this.scanner).setEnabled(false);
+        Mockito.verify(this.display).setDisplay((JPanel)this.borrowUI, "Borrow UI");
+        
         assertEquals(EBorrowState.INITIALIZED, this.borrowControl.getState());
     }
     
@@ -192,7 +198,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwiped() {
         final Integer memberID = this.MEMBER_CLEAN;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
@@ -222,7 +228,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedOverdue() {
         final Integer memberID = this.MEMBER_OVERDUE;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
@@ -243,7 +249,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedMaxedFines() {
         final Integer memberID = this.MEMBER_MAXED_FINES;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
@@ -263,7 +269,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedMaxedLoans() {
         final Integer memberID = this.MEMBER_MAXED_LOANS;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
@@ -282,7 +288,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedAcceptableFines() {
         final Integer memberID = this.MEMBER_ACCEPTABLE_FINES;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
@@ -302,7 +308,7 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedAcceptableLoans() {
         final Integer memberID = this.MEMBER_ACCEPTABLE_LOANS;
         this.borrowControl.initialise();
-        
+        // need to rest the scanner from mockitos perspective to avoid a false negative
         Mockito.reset(this.scanner);
         
         this.borrowControl.cardSwiped(memberID);
