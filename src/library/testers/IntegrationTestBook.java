@@ -70,5 +70,13 @@ public class IntegrationTestBook {
         this.book.borrow(this.loan);
         assertEquals(this.book.getLoan(), this.loan);
     }
+    
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void testBorrowRuntimeException() {
+        this.book.borrow(this.loan);
+        this.book.borrow(this.loan);
+    }
 
 }
