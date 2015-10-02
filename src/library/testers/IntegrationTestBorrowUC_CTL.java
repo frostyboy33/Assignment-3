@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.JPanel;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +20,6 @@ import library.entities.LoanHelper;
 import library.entities.LoanMapDAO;
 import library.entities.MemberHelper;
 import library.entities.MemberMapDAO;
-import library.hardware.Display;
 import library.interfaces.EBorrowState;
 import library.interfaces.IBorrowUI;
 import library.interfaces.daos.IBookDAO;
@@ -195,7 +193,10 @@ public class IntegrationTestBorrowUC_CTL {
         final Integer memberID = this.MEMBER_CLEAN;
         this.borrowControl.initialise();
         this.borrowControl.cardSwiped(memberID);
+        
+        
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
+        
         assertFalse(this.memberDAO.getMemberByID(memberID).hasOverDueLoans());
         assertFalse(this.memberDAO.getMemberByID(memberID).hasReachedFineLimit());
         assertFalse(this.memberDAO.getMemberByID(memberID).hasReachedLoanLimit());
@@ -215,7 +216,17 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedOverdue() {
         final Integer memberID = this.MEMBER_OVERDUE;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
+        
+        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(false);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.BORROWING_RESTRICTED);
+        Mockito.verify(this.borrowUI).displayOverDueMessage();
+        
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
         assertTrue(this.memberDAO.getMemberByID(memberID).hasOverDueLoans());
     }
@@ -226,7 +237,18 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedMaxedFines() {
         final Integer memberID = this.MEMBER_MAXED_FINES;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
+        
+        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(false);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.BORROWING_RESTRICTED);
+        Mockito.verify(this.borrowUI).displayOverFineLimitMessage(
+                                      this.memberDAO.getMemberByID(memberID).getFineAmount());
+        
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
         assertTrue(this.memberDAO.getMemberByID(memberID).hasReachedFineLimit());
     }
@@ -235,7 +257,17 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedMaxedLoans() {
         final Integer memberID = this.MEMBER_MAXED_LOANS;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
+        
+        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(false);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.BORROWING_RESTRICTED);
+        Mockito.verify(this.borrowUI).displayAtLoanLimitMessage();
+        
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
         assertTrue(this.memberDAO.getMemberByID(memberID).hasReachedLoanLimit());
     }
@@ -244,7 +276,18 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedAcceptableFines() {
         final Integer memberID = this.MEMBER_ACCEPTABLE_FINES;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
+        
+        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(true);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.SCANNING_BOOKS);
+        Mockito.verify(this.borrowUI).displayOutstandingFineMessage(
+                                      this.memberDAO.getMemberByID(memberID).getFineAmount());
+        
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
         assertTrue(this.memberDAO.getMemberByID(memberID).hasFinesPayable());
     }
@@ -253,7 +296,15 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwipedAcceptableLoans() {
         final Integer memberID = this.MEMBER_ACCEPTABLE_LOANS;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
+        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(true);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.SCANNING_BOOKS);
+        
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
         assertNotNull(this.memberDAO.getMemberByID(memberID).getLoans());
     }
