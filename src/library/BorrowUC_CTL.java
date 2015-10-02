@@ -267,6 +267,10 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	    }
 		
 	}
+	
+	public EBorrowState getState(){
+	    return this.state;
+	}
 
 	private String buildLoanListDisplay(List<ILoan> loans) {
 		StringBuilder bld = new StringBuilder();
