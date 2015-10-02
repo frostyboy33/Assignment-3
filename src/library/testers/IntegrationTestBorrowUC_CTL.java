@@ -239,5 +239,14 @@ public class IntegrationTestBorrowUC_CTL {
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
         assertTrue(this.memberDAO.getMemberByID(memberID).hasReachedLoanLimit());
     }
+    
+    @Test
+    public void testCardSwipedAcceptableFines() {
+        final Integer memberID = this.MEMBER_ACCEPTABLE_FINES;
+        this.borrowControl.initialise();
+        this.borrowControl.cardSwiped(memberID);
+        assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
+        assertTrue(this.memberDAO.getMemberByID(memberID).hasFinesPayable());
+    }
 
 }
