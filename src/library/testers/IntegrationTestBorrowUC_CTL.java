@@ -192,9 +192,14 @@ public class IntegrationTestBorrowUC_CTL {
 
     @Test
     public void testCardSwiped() {
+        final Integer memberID = this.MEMBER_CLEAN;
         this.borrowControl.initialise();
-        this.borrowControl.cardSwiped(this.MEMBER_CLEAN);
+        this.borrowControl.cardSwiped(memberID);
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
+        assertFalse(this.memberDAO.getMemberByID(memberID).hasOverDueLoans());
+        assertFalse(this.memberDAO.getMemberByID(memberID).hasReachedFineLimit());
+        assertFalse(this.memberDAO.getMemberByID(memberID).hasReachedLoanLimit());
+        assertFalse(this.memberDAO.getMemberByID(memberID).hasFinesPayable());
     }
     
     
