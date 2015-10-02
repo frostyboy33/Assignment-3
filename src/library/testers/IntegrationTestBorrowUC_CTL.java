@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +19,8 @@ import library.entities.LoanHelper;
 import library.entities.LoanMapDAO;
 import library.entities.MemberHelper;
 import library.entities.MemberMapDAO;
+import library.hardware.Display;
+import library.interfaces.EBorrowState;
 import library.interfaces.IBorrowUI;
 import library.interfaces.daos.IBookDAO;
 import library.interfaces.daos.ILoanDAO;
@@ -26,6 +30,7 @@ import library.interfaces.hardware.ICardReader;
 import library.interfaces.hardware.IDisplay;
 import library.interfaces.hardware.IPrinter;
 import library.interfaces.hardware.IScanner;
+import library.panels.borrow.ABorrowPanel;
 
 public class IntegrationTestBorrowUC_CTL {
     
@@ -50,12 +55,13 @@ public class IntegrationTestBorrowUC_CTL {
         this.printer = Mockito.mock(IPrinter.class);
         this.display = Mockito.mock(IDisplay.class);
         
+        
         this.bookDAO = new BookDAO(new BookHelper());
         this.loanDAO = new LoanMapDAO(new LoanHelper());
         this.memberDAO = new MemberMapDAO(new MemberHelper());
         
         
-        this.borrowUI = Mockito.mock(IBorrowUI.class);
+        this.borrowUI = Mockito.mock(ABorrowPanel.class);
         this.pendingLoanList = new ArrayList<ILoan>();
         
         this.borrowControl = new BorrowUC_CTL(this.cardReader,
@@ -67,6 +73,8 @@ public class IntegrationTestBorrowUC_CTL {
                                               this.memberDAO,
                                               this.borrowUI,
                                               this.pendingLoanList);
+        
+        
     }
 
 
@@ -90,10 +98,20 @@ public class IntegrationTestBorrowUC_CTL {
     }
 
 
+    
 
     @Test
     public void testInitialise() {
-        
+        this.borrowControl.initialise();
+        assertEquals(EBorrowState.INITIALIZED, this.borrowControl.getState());
+    }
+    
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void testInitialiseRuntimeException() {
+        this.borrowControl.initialise();
+        this.borrowControl.initialise();
     }
 
 
