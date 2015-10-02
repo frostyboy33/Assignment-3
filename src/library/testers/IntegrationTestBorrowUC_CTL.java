@@ -208,18 +208,31 @@ public class IntegrationTestBorrowUC_CTL {
     
     @Test
     public void testCardSwipedOverdue() {
+        final Integer memberID = this.MEMBER_OVERDUE;
         this.borrowControl.initialise();
-        this.borrowControl.cardSwiped(this.MEMBER_OVERDUE);
+        this.borrowControl.cardSwiped(memberID);
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
+        assertTrue(this.memberDAO.getMemberByID(memberID).hasOverDueLoans());
     }
     
     
     
     @Test
     public void testCardSwipedMaxedFines() {
+        final Integer memberID = this.MEMBER_MAXED_FINES;
         this.borrowControl.initialise();
-        this.borrowControl.cardSwiped(this.MEMBER_MAXED_FINES);
+        this.borrowControl.cardSwiped(memberID);
         assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
+        assertTrue(this.memberDAO.getMemberByID(memberID).hasReachedFineLimit());
+    }
+    
+    @Test
+    public void testCardSwipedMaxedLoans() {
+        final Integer memberID = this.MEMBER_MAXED_LOANS;
+        this.borrowControl.initialise();
+        this.borrowControl.cardSwiped(memberID);
+        assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
+        assertTrue(this.memberDAO.getMemberByID(memberID).hasReachedLoanLimit());
     }
 
 }
