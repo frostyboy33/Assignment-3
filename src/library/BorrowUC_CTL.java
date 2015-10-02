@@ -65,6 +65,15 @@ public class BorrowUC_CTL implements ICardReaderListener,
 		state = EBorrowState.CREATED;
 	}
 	
+	public BorrowUC_CTL(ICardReader reader, IScanner scanner, 
+            IPrinter printer, IDisplay display,
+            IBookDAO bookDAO, ILoanDAO loanDAO, IMemberDAO memberDAO, 
+            IBorrowUI borrowUI, List<ILoan> pendingLoanList ) {
+	    this(reader, scanner, printer, display, bookDAO, loanDAO, memberDAO);
+	    this.ui = borrowUI;
+	    this.pendingLoanList = pendingLoanList;
+	}
+	
 
 	
 	public void initialise() {
