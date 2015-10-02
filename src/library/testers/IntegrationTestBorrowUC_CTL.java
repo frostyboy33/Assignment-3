@@ -187,16 +187,30 @@ public class IntegrationTestBorrowUC_CTL {
         this.borrowControl.initialise();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testCardSwipedRuntimeException() {
-        this.borrowControl.cardSwiped(this.MEMBER_CLEAN);
-    }
+    
+    
 
     @Test
     public void testCardSwiped() {
         this.borrowControl.initialise();
         this.borrowControl.cardSwiped(this.MEMBER_CLEAN);
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
+    }
+    
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void testCardSwipedRuntimeException() {
+        this.borrowControl.cardSwiped(this.MEMBER_CLEAN);
+    }
+    
+    
+    
+    @Test
+    public void testCardSwipedOverdue() {
+        this.borrowControl.initialise();
+        this.borrowControl.cardSwiped(this.MEMBER_OVERDUE);
+        assertEquals(EBorrowState.BORROWING_RESTRICTED, this.borrowControl.getState());
     }
 
 }
