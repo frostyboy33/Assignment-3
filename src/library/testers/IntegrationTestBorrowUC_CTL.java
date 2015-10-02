@@ -192,9 +192,15 @@ public class IntegrationTestBorrowUC_CTL {
     public void testCardSwiped() {
         final Integer memberID = this.MEMBER_CLEAN;
         this.borrowControl.initialise();
+        
+        Mockito.reset(this.scanner);
+        
         this.borrowControl.cardSwiped(memberID);
         
-        
+        Mockito.verify(this.cardReader).setEnabled(false);
+        Mockito.verify(this.scanner).setEnabled(true);
+        Mockito.verify(this.borrowUI).setState(EBorrowState.SCANNING_BOOKS);
+                
         assertEquals(EBorrowState.SCANNING_BOOKS, this.borrowControl.getState());
         
         assertFalse(this.memberDAO.getMemberByID(memberID).hasOverDueLoans());
