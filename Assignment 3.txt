@@ -1,0 +1,8 @@
+URL to REPO: https://github.com/frostyboy33/Assignment-3/tree/Working
+
+All Source code is in /src/library
+All Entity/Map/Helper are in /src/library/entities
+Note I wrote the implementation of the Book family and i wrote my own implementation of BorrowUC_CTL
+All unit testing and integration testing is in /src/library/testers
+All UAT scripts are in /UAT
+
